@@ -172,8 +172,8 @@
       el('btnFoto').disabled = true;
       el('btnUlang').disabled = true;
       const constraintsList = preferBack ? [
-        { video: { facingMode: { exact: "environment" } }, audio: false },
-        { video: { facingMode: "environment" }, audio: false },
+        { video: { facingMode: { exact: "user" } }, audio: false },
+        { video: { facingMode: "user" }, audio: false },
         { video: true, audio: false }
       ] : [{ video: true, audio: false }];
       if (state.stream) {
@@ -322,5 +322,6 @@
   </script>
 </body>
 </html>
+
 
 
