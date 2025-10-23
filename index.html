@@ -463,10 +463,10 @@
           el('akurasi').textContent = `±${Math.round(accuracy)} m`;
           const gmap = `https://maps.google.com/?q=${latitude},${longitude}`;
           el('mapLink').textContent = gmap; el('mapLink').href = gmap;
-          if (accuracy <= 20) {
-            showLocMsg("✅ Lokasi akurat terdeteksi. Siap untuk submit!", "ok");
+          if (accuracy <= 5) {
+            showLocMsg("✅ Lokasi sangat akurat terdeteksi. Siap untuk submit!", "ok");
           } else {
-            showLocMsg("⏳ Akurasi masih kurang optimal. Coba pindah ke area terbuka.", "info");
+            showLocMsg("⏳ Akurasi masih kurang (perlu ≤5m). Coba pindah ke area terbuka.", "info");
           }
           evaluateSubmitReady();
         },
@@ -506,7 +506,7 @@
         showStatus("⚠️ Lengkapi semua field wajib.", "err"); return;
       }
       showStatus("⏳ Menyimpan presensi...", "info");
-      const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbx5KWoK_oAlKWZGrtnQtywX-HX_uAOE4idLdfPryw9HNG2hI1pZQ0rvnCe56_4h8nw/exec";
+      const SCRIPT_URL = "https://script.google.com/macros/s/AKfycby9GJBfJJEgNT8X60WHTCI70cQoMNGI-Fg9bxzpJAOrT7zMgRGFHuvvMQqioG3g0PU8/exec";
       try {
         await fetch(SCRIPT_URL, {
           method: "POST", mode: "no-cors",
