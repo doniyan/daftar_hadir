@@ -4,139 +4,332 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1.0,viewport-fit=cover" />
   <link rel="manifest" href="manifest.json">
-<meta name="theme-color" content="#4CAF50">
+  <meta name="theme-color" content="#4CAF50">
   <script>
   if ("serviceWorker" in navigator) {
     navigator.serviceWorker.register("sw.js");
   }
-</script>
+  </script>
   <title>Presensi Mobile</title>
   <style>
     :root {
       --pri:#4CAF50; --pri2:#45a049; --bg:#f7f9fb;
+      --shadow-sm: 0 2px 8px rgba(0,0,0,.08);
+      --shadow-md: 0 4px 16px rgba(0,0,0,.12);
+      --shadow-lg: 0 8px 32px rgba(0,0,0,.16);
     }
     *{box-sizing:border-box;margin:0;padding:0}
     body {
-      font-family: "Segoe UI", Roboto, sans-serif;
+      font-family: "Segoe UI", Roboto, "Helvetica Neue", sans-serif;
       background: linear-gradient(135deg,#667eea 0%,#764ba2 100%);
-      min-height:100vh; padding:12px;
+      min-height:100vh; padding:16px;
+      position: relative;
+    }
+    body::before {
+      content: '';
+      position: fixed;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background: radial-gradient(circle at 20% 50%, rgba(255,255,255,.1) 0%, transparent 50%),
+                  radial-gradient(circle at 80% 80%, rgba(255,255,255,.08) 0%, transparent 50%);
+      pointer-events: none;
     }
     .card {
-      max-width: 500px; margin: auto; background:#fff;
-      border-radius:18px; box-shadow:0 6px 20px rgba(0,0,0,.2);
-      overflow:hidden;
+      max-width: 480px; margin: auto; background:#fff;
+      border-radius:24px; box-shadow: var(--shadow-lg);
+      overflow:hidden; position: relative;
+      animation: slideUp .5s ease-out;
+    }
+    @keyframes slideUp {
+      from { opacity: 0; transform: translateY(20px); }
+      to { opacity: 1; transform: translateY(0); }
     }
     .header {
-      padding:18px; color:#fff;
-      background: linear-gradient(45deg,var(--pri),var(--pri2));
+      padding:28px 24px; color:#fff;
+      background: linear-gradient(135deg,#4CAF50 0%,#45a049 50%, #388E3C 100%);
       text-align:center;
+      position: relative;
+      overflow: hidden;
     }
-    .header h1 { font-size:1.4rem; margin-bottom:4px }
-    .header p { font-size:.9rem; opacity:.9 }
+    .header::before {
+      content: '';
+      position: absolute;
+      top: -50%; right: -50%;
+      width: 200%; height: 200%;
+      background: radial-gradient(circle, rgba(255,255,255,.1) 0%, transparent 70%);
+      animation: pulse 3s ease-in-out infinite;
+    }
+    @keyframes pulse {
+      0%, 100% { transform: scale(1); opacity: .5; }
+      50% { transform: scale(1.1); opacity: .3; }
+    }
+    .header-icon {
+      font-size: 3rem;
+      margin-bottom: 8px;
+      display: inline-block;
+      animation: bounce 2s ease-in-out infinite;
+    }
+    @keyframes bounce {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-8px); }
+    }
+    .header h1 { 
+      font-size:1.5rem; 
+      margin-bottom:8px;
+      font-weight: 700;
+      position: relative;
+      text-shadow: 0 2px 8px rgba(0,0,0,.2);
+    }
+    .header p { 
+      font-size:.88rem; 
+      opacity:.92;
+      line-height: 1.4;
+      position: relative;
+    }
 
-    .body { padding:18px }
-    .row { display:grid; gap:12px; margin-bottom:14px }
-    .row.two { grid-template-columns:1fr 1fr; gap:10px }
+    .body { padding:24px }
+    .row { display:grid; gap:14px; margin-bottom:16px }
+    .row.two { grid-template-columns:1fr 1fr; gap:12px }
 
-    label { font-size:.95rem; font-weight:600 }
+    .input-group {
+      position: relative;
+      margin-bottom: 18px;
+    }
+    label { 
+      font-size:.92rem; 
+      font-weight:600;
+      color: #334155;
+      display: block;
+      margin-bottom: 8px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
     input, select {
-      width:100%; padding:12px 14px; border:1.5px solid #ddd;
-      border-radius:10px; font-size:1rem;
+      width:100%; padding:14px 16px; 
+      border:2px solid #e2e8f0;
+      border-radius:12px; font-size:1rem;
+      transition: all .3s ease;
+      background: #fff;
+    }
+    input:focus, select:focus {
+      outline: none;
+      border-color: var(--pri);
+      box-shadow: 0 0 0 4px rgba(76,175,80,.1);
     }
 
     .section {
-      background:#f8fafc; border:1px solid #eef2f7;
-      padding:14px; border-radius:14px; margin-bottom:16px
+      background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
+      border:2px solid #e2e8f0;
+      padding:20px; 
+      border-radius:16px; 
+      margin-bottom:18px;
+      transition: all .3s ease;
+    }
+    .section:hover {
+      box-shadow: var(--shadow-sm);
+      border-color: #cbd5e1;
+    }
+    .section-title {
+      font-size: 1.05rem;
+      font-weight: 700;
+      color: #1e293b;
+      margin-bottom: 14px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
     }
     .status {
-      margin-top:10px; padding:10px;
-      border-radius:10px; font-weight:500; text-align:center;
-      font-size:.9rem
+      margin-top:12px; padding:12px 16px;
+      border-radius:12px; font-weight:500;
+      font-size:.9rem;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      animation: fadeIn .3s ease-out;
     }
-    .ok{background:#d4edda;color:#155724;border:1px solid #c3e6cb}
-    .err{background:#fde2e1;color:#7a1c1b;border:1px solid #f5b5b2}
-    .info{background:#e6f4ff;color:#084b7a;border:1px solid #c7e3ff}
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(-4px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    .ok{background:#d1fae5;color:#065f46;border:2px solid #6ee7b7}
+    .err{background:#fee2e2;color:#991b1b;border:2px solid #fca5a5}
+    .info{background:#dbeafe;color:#1e40af;border:2px solid #93c5fd}
 
     .button {
       display:inline-flex; align-items:center; justify-content:center;
-      gap:8px; padding:14px; border:none;
+      gap:10px; padding:14px 20px; border:none;
       border-radius:12px; font-weight:600; cursor:pointer;
       font-size:1rem; width:100%;
+      transition: all .3s ease;
+      position: relative;
+      overflow: hidden;
     }
-    .primary{background:linear-gradient(45deg,var(--pri),var(--pri2));color:#fff}
-    .secondary{background:linear-gradient(45deg,#2196F3,#1976D2);color:#fff}
-    .button:disabled{opacity:.6;cursor:not-allowed}
+    .button::before {
+      content: '';
+      position: absolute;
+      top: 50%; left: 50%;
+      width: 0; height: 0;
+      border-radius: 50%;
+      background: rgba(255,255,255,.3);
+      transform: translate(-50%, -50%);
+      transition: width .5s, height .5s;
+    }
+    .button:active::before {
+      width: 300px;
+      height: 300px;
+    }
+    .primary{
+      background:linear-gradient(135deg,#4CAF50 0%,#45a049 100%);
+      color:#fff;
+      box-shadow: 0 4px 12px rgba(76,175,80,.3);
+    }
+    .primary:hover:not(:disabled){
+      transform: translateY(-2px);
+      box-shadow: 0 6px 20px rgba(76,175,80,.4);
+    }
+    .secondary{
+      background:linear-gradient(135deg,#2196F3 0%,#1976D2 100%);
+      color:#fff;
+      box-shadow: 0 4px 12px rgba(33,150,243,.3);
+    }
+    .secondary:hover:not(:disabled){
+      transform: translateY(-2px);
+      box-shadow: 0 6px 20px rgba(33,150,243,.4);
+    }
+    .button-outline {
+      background: #fff;
+      color: #64748b;
+      border: 2px solid #e2e8f0;
+      box-shadow: var(--shadow-sm);
+    }
+    .button-outline:hover:not(:disabled) {
+      border-color: #cbd5e1;
+      background: #f8fafc;
+    }
+    .button:disabled{
+      opacity:.5;
+      cursor:not-allowed;
+      transform: none !important;
+    }
+    .button-group {
+      display: grid;
+      gap: 10px;
+      margin-top: 12px;
+    }
 
     video {
-      width:100%; border-radius:12px;
-      background:#eef2f7; object-fit:cover; margin-bottom:10px;
+      width:100%; 
+      border-radius:14px;
+      background:#f1f5f9; 
+      object-fit:cover; 
+      margin-bottom:12px;
+      border: 2px solid #e2e8f0;
+      box-shadow: var(--shadow-sm);
     }
     #preview img {
-      max-width:100%; border-radius:12px; border:3px solid var(--pri); margin-top:8px;
+      max-width:100%; 
+      border-radius:14px; 
+      border:3px solid var(--pri); 
+      margin-top:12px;
+      box-shadow: var(--shadow-md);
     }
 
-    .kv {display:flex; justify-content:space-between; font-size:.9rem;
-         border-bottom:1px dashed #e5e7eb; padding:6px 0 }
+    .kv {
+      display:flex; 
+      justify-content:space-between; 
+      font-size:.9rem;
+      border-bottom:1px dashed #cbd5e1; 
+      padding:10px 0;
+      align-items: center;
+    }
     .kv:last-child{border-bottom:none}
-    a.map { font-size:.8rem; color:#1976D2; word-break:break-all }
+    .kv-label {
+      color: #64748b;
+      font-weight: 500;
+    }
+    .kv-value {
+      color: #1e293b;
+      font-weight: 600;
+      text-align: right;
+    }
+    a.map { 
+      font-size:.85rem; 
+      color:#1976D2; 
+      word-break:break-all;
+      text-decoration: none;
+      padding: 4px 8px;
+      border-radius: 6px;
+      transition: all .2s ease;
+    }
+    a.map:hover {
+      background: #dbeafe;
+    }
+
+    .badge {
+      display: inline-block;
+      padding: 4px 10px;
+      border-radius: 8px;
+      font-size: .8rem;
+      font-weight: 600;
+      background: #e0f2fe;
+      color: #0369a1;
+    }
   </style>
 </head>
 <body>
   <div class="card">
     <div class="header">
-      <h1>📋 Daftar Hadir ASN Dinlutkan Kab. Rembang</h1>
-      <p>Aplikasi ini dibuat dalam rangka optimalisasi kedisiplinan ASN di Lingkungan Dinlutkan</p>
+      <div class="header-icon">📋</div>
+      <h1>Daftar Hadir ASN</h1>
+      <p>Dinlutkan Kabupaten Rembang</p>
     </div>
     <div class="body">
       <form id="formPresensi">
-        <div class="row">
-          <div>
-            <label for="nama">Nama Lengkap</label>
-            <input id="nama" name="nama" required />
-          </div>
-        </div>
         <div class="row two">
-          <div>
-            <label for="nip">NIP</label>
-            <input id="nip" name="nip" required />
+          <div class="input-group">
+            <label for="nip">🆔 NIP</label>
+            <input id="nip" name="nip" placeholder="Masukkan NIP" required />
           </div>
-          <div>
-            <label for="status">Status</label>
+          <div class="input-group">
+            <label for="status">✅ Status</label>
             <select id="status" name="status" required>
-              <option value="">Pilih</option>
-              <option>Hadir</option><option>Terlambat</option><option>Izin</option>
+              <option value="">Pilih Status</option>
+              <option>Hadir</option>
+              <option>Terlambat</option>
+              <option>Izin</option>
             </select>
           </div>
         </div>
-        <div class="row">
-          <div>
-            <label for="tpi">Unit Kerja</label>
-            <select id="tpi" name="tpi" required>
-              <option value="">Pilih Unit Kerja</option>
-              <option>Dinas</option>
-              <option>UPT</option>
-              <option>TPI Tunggulsari</option>
-              <option>TPI Tanjungsari</option>
-              <option>TPI Tasikagung I</option>
-              <option>TPI Tasikagung II</option>
-              <option>TPI Pasarbanggi</option>
-              <option>TPI Pandangan</option>
-              <option>TPI Karanganyar</option>
-              <option>TPI Karanglincak</option>
-              <option>TPI Sarang</option>
-              <option>WFH</option>
-              <option>Lapangan</option>
-            </select>
-          </div>
+        
+        <div class="input-group">
+          <label for="tpi">🏢 Unit Kerja</label>
+          <select id="tpi" name="tpi" required>
+            <option value="">Pilih Unit Kerja</option>
+            <option>Dinas</option>
+            <option>UPT</option>
+            <option>TPI Tunggulsari</option>
+            <option>TPI Tanjungsari</option>
+            <option>TPI Tasikagung I</option>
+            <option>TPI Tasikagung II</option>
+            <option>TPI Pasarbanggi</option>
+            <option>TPI Pandangan</option>
+            <option>TPI Karanganyar</option>
+            <option>TPI Karanglincak</option>
+            <option>TPI Sarang</option>
+            <option>WFH</option>
+            <option>Lapangan</option>
+          </select>
         </div>
 
         <!-- Kamera -->
         <div class="section">
-          <label>📷 Kamera</label>
+          <div class="section-title">📷 Ambil Foto Selfie</div>
           <video id="video" playsinline autoplay muted></video>
-          <button type="button" id="btnKamera" class="button secondary">🎥 Buka Kamera</button>
-          <button type="button" id="btnFoto" class="button primary" disabled>📸 Ambil Foto</button>
-          <button type="button" id="btnUlang" class="button" disabled>🔄 Ulangi</button>
+          <div class="button-group">
+            <button type="button" id="btnKamera" class="button secondary">🎥 Aktifkan Kamera</button>
+            <button type="button" id="btnFoto" class="button primary" disabled>📸 Ambil Foto</button>
+            <button type="button" id="btnUlang" class="button button-outline" disabled>🔄 Ulangi Foto</button>
+          </div>
           <div id="preview"></div>
           <canvas id="canvas" style="display:none"></canvas>
           <div id="camMsg" class="status info" style="display:none"></div>
@@ -144,11 +337,23 @@
 
         <!-- Lokasi -->
         <div class="section">
-          <label>📍 Lokasi</label>
-          <div class="kv"><span>Tanggal & Waktu</span><span id="waktu">-</span></div>
-          <div class="kv"><span>Koordinat</span><span id="koor">Mencari...</span></div>
-          <div class="kv"><span>Akurasi</span><span id="akurasi">-</span></div>
-          <div class="kv"><span>Peta</span><a id="mapLink" class="map" target="_blank">-</a></div>
+          <div class="section-title">📍 Informasi Lokasi</div>
+          <div class="kv">
+            <span class="kv-label">📅 Tanggal & Waktu</span>
+            <span class="kv-value" id="waktu">-</span>
+          </div>
+          <div class="kv">
+            <span class="kv-label">🌍 Koordinat</span>
+            <span class="kv-value" id="koor">Mencari...</span>
+          </div>
+          <div class="kv">
+            <span class="kv-label">🎯 Akurasi</span>
+            <span class="kv-value" id="akurasi">-</span>
+          </div>
+          <div class="kv">
+            <span class="kv-label">🗺️ Peta</span>
+            <a id="mapLink" class="map" target="_blank">-</a>
+          </div>
           <div id="locMsg" class="status info" style="display:none"></div>
         </div>
 
@@ -158,8 +363,7 @@
     </div>
   </div>
 
-  <!-- Script sama persis dengan kode kamu, tinggal ditempel -->
-   <script>
+  <script>
     // ====== Util waktu ======
     function updateWaktu() {
       const now = new Date();
@@ -195,11 +399,11 @@
           video.srcObject = stream;
           await video.play();
           el('btnFoto').disabled = false;
-          showCamMsg("Kamera aktif. Arahkan wajah/objek lalu klik Ambil Foto.", "ok");
+          showCamMsg("✅ Kamera aktif. Arahkan wajah lalu klik Ambil Foto.", "ok");
           return;
         } catch {}
       }
-      showCamMsg("Tidak dapat mengakses kamera. Pastikan situs HTTPS dan izin kamera sudah diberikan.", "err");
+      showCamMsg("❌ Tidak dapat mengakses kamera. Pastikan izin kamera sudah diberikan.", "err");
     }
 
     function showCamMsg(msg, type="info") {
@@ -211,7 +415,7 @@
 
     function ambilFoto() {
       const video = el('video');
-      if (!video.videoWidth) { showCamMsg("Kamera belum siap, coba lagi sebentar.", "err"); return; }
+      if (!video.videoWidth) { showCamMsg("⚠️ Kamera belum siap, coba lagi sebentar.", "err"); return; }
       const canvas = el('canvas');
       const maxSide = 1280;
       const { videoWidth:w, videoHeight:h } = video;
@@ -221,10 +425,10 @@
       const ctx = canvas.getContext('2d');
       ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
       state.photoDataUrl = canvas.toDataURL('image/jpeg', 0.85);
-      el('preview').innerHTML = `<p><strong>Foto berhasil diambil:</strong></p><img src="${state.photoDataUrl}" alt="Foto">`;
+      el('preview').innerHTML = `<p style="margin-top:12px;color:#059669;font-weight:600;font-size:.9rem;">✅ Foto berhasil diambil</p><img src="${state.photoDataUrl}" alt="Foto">`;
       if (state.stream) { state.stream.getTracks().forEach(t => t.stop()); state.stream = null; }
       el('btnUlang').disabled = false;
-      showCamMsg("Foto ditangkap. Jika kurang pas, klik Ulangi.", "ok");
+      showCamMsg("✅ Foto ditangkap. Jika kurang pas, klik Ulangi Foto.", "ok");
       evaluateSubmitReady();
     }
 
@@ -245,9 +449,9 @@
 
     function startHighAccuracyGPS() {
       if (!('geolocation' in navigator)) {
-        showLocMsg("Perangkat tidak mendukung geolokasi.", "err"); return;
+        showLocMsg("❌ Perangkat tidak mendukung geolokasi.", "err"); return;
       }
-      showLocMsg("Mencari sinyal GPS akurat... tetap di tempat terbuka.", "info");
+      showLocMsg("🔍 Mencari sinyal GPS akurat... tetap di tempat terbuka.", "info");
       el('koor').textContent = "Mencari..."; el('akurasi').textContent = "-";
       el('mapLink').textContent = "-"; el('mapLink').removeAttribute('href');
       if (state.watchId) { navigator.geolocation.clearWatch(state.watchId); state.watchId = null; }
@@ -260,13 +464,13 @@
           const gmap = `https://maps.google.com/?q=${latitude},${longitude}`;
           el('mapLink').textContent = gmap; el('mapLink').href = gmap;
           if (accuracy <= 20) {
-            showLocMsg("✅ Lokasi akurat. Kamu bisa submit.", "ok");
+            showLocMsg("✅ Lokasi akurat terdeteksi. Siap untuk submit!", "ok");
           } else {
-            showLocMsg("⏳ Akurasi masih kurang (coba ke area terbuka).", "info");
+            showLocMsg("⏳ Akurasi masih kurang optimal. Coba pindah ke area terbuka.", "info");
           }
           evaluateSubmitReady();
         },
-        (err) => { showLocMsg("Gagal memperoleh lokasi: " + err.message, "err"); evaluateSubmitReady(); },
+        (err) => { showLocMsg("❌ Gagal memperoleh lokasi: " + err.message, "err"); evaluateSubmitReady(); },
         { enableHighAccuracy: true, timeout: 20000, maximumAge: 0 }
       );
     }
@@ -288,7 +492,6 @@
       e.preventDefault();
       if (el('btnSubmit').disabled) return;
       const data = {
-        nama: el('nama').value.trim(),
         nip: el('nip').value.trim(),
         tpi: el('tpi').value,
         status: el('status').value,
@@ -299,10 +502,10 @@
         accuracy: state.lokasi?.accuracy ?? null,
         foto: state.photoDataUrl
       };
-      if (!data.nama || !data.nip || !data.tpi || !data.status) {
-        showStatus("Lengkapi semua field wajib.", "err"); return;
+      if (!data.nip || !data.tpi || !data.status) {
+        showStatus("⚠️ Lengkapi semua field wajib.", "err"); return;
       }
-      showStatus("Menyimpan presensi...", "info");
+      showStatus("⏳ Menyimpan presensi...", "info");
       const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbx5KWoK_oAlKWZGrtnQtywX-HX_uAOE4idLdfPryw9HNG2hI1pZQ0rvnCe56_4h8nw/exec";
       try {
         await fetch(SCRIPT_URL, {
@@ -329,7 +532,3 @@
   </script>
 </body>
 </html>
-
-
-
-
