@@ -309,11 +309,11 @@ a.map-link:hover { background:rgba(56,189,248,.25); }
   <div class="body">
     <form id="formPresensi" autocomplete="off">
 
-      <!-- NIP + Unit Kerja -->
+      <!-- ID + Unit Kerja -->
       <div class="row2">
         <div class="field">
-          <label>🆔 NIP</label>
-          <input id="nip" name="nip" placeholder="Masukkan NIP" required/>
+          <label>🆔 ID</label>
+          <input id="id" name="id" placeholder="Masukkan ID" required/>
         </div>
         <div class="field">
           <label>🏢 Unit Kerja</label>
@@ -523,7 +523,7 @@ async function submitPresensi(e){
   if(!_selectedStatus){ el('statusPickMsg').style.display='flex'; return; }
   if(el('btnSubmit').disabled) return;
   const data={
-    nip: el('nip').value.trim(),
+    id: el('id').value.trim(),
     tpi: el('tpi').value,
     status: _selectedStatus,
     tanggal: new Date().toLocaleDateString('id-ID',{timeZone:'Asia/Jakarta'}),
@@ -533,7 +533,7 @@ async function submitPresensi(e){
     accuracy: state.lokasi?.accuracy??null,
     foto: state.photoDataUrl
   };
-  if(!data.nip||!data.tpi){ showMsg('statusMsg','⚠️ Lengkapi semua field wajib.','err'); return; }
+  if(!data.id||!data.tpi){ showMsg('statusMsg','⚠️ Lengkapi semua field wajib.','err'); return; }
   showMsg('statusMsg','⏳ Menyimpan presensi…','info');
   el('btnSubmit').disabled = true;
   const SCRIPT_URL="https://script.google.com/macros/s/AKfycby9GJBfJJEgNT8X60WHTCI70cQoMNGI-Fg9bxzpJAOrT7zMgRGFHuvvMQqioG3g0PU8/exec";
